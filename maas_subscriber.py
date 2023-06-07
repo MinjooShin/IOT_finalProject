@@ -4,23 +4,14 @@ import json
 # Mosquitto 브로커에 연결되었을 때 실행되는 콜백 함수
 def on_connect(client, userdata, flags, rc):
     print("Connected to Mosquitto Broker")
-    client.subscribe("system_info")
+    client.subscribe("system_info/cpu")
+    client.subscribe("system_info/ram")
+    client.subscribe("system_info/disk")
 
 # Mosquitto 브로커부터 메시지를 수신받았을 때 실행되는 콜백 함수
 def on_message(client, userdata, msg):
-    message = msg.payload.decode()
-    data = json.loads(message)
-
-    message = data["message"]
-    print(message)
-
-    # 시스템 정보 추출
-    if message == "High CPU usage!":
-        cpu_percent = data["cpu_percent"]
-        print("value : " + cpu_percent)
-    elif message == "High RAM usage!":
-        ram_percent = data["ram_percent"]
-        print("value : " + ram_percent)
+    message = json.loads(msg.payload)
+    print(f'Topic: {msg.topic}, Message: {message["message"]}, Value: {message["cpu_percent" if "cpu" in msg.topic else "ram_percent" if "ram" in msg.topic else "disk_percent"]}')
 
 # Mosquitto 브로커에 연결
 mqtt_client = mqtt.Client()
