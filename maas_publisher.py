@@ -3,18 +3,21 @@ import psutil
 import paho.mqtt.client as mqtt
 import time
 from pymongo import MongoClient
+from datetime import datetime
+import pytz
 
+korea_tz = pytz.timezone('Asia/Seoul')
+korea_time = datetime.now(korea_tz).strftime('%Y-%m-%d %H:%M:%S')
 
 def on_connect(client, userdata, flags, rc):
     print("Connected to Mosquitto Broker")
 
-
 BROKER_HOST = "localhost"
 BROKER_PORT = 1883
 
-cpu_threshold = 30
-ram_threshold = 20
-disk_threshold = 50
+cpu_threshold = 50
+ram_threshold = 60
+disk_threshold = 80
 
 client = MongoClient('localhost', 27017)  
 db = client.system_info  
@@ -35,7 +38,7 @@ while True:
         'cpu_percent': cpu_percent,
         'ram_percent': ram_percent,
         'disk_percent': disk_percent,
-        'timestamp': time.time()  # store the current timestamp
+        'timestamp': korea_time
     }
     
     usage_collection.insert_one(usage_data)  # store usage data in MongoDB

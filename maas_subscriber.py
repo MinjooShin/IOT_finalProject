@@ -4,6 +4,7 @@ import json
 # Mosquitto 브로커에 연결되었을 때 실행되는 콜백 함수
 def on_connect(client, userdata, flags, rc):
     print("Connected to Mosquitto Broker")
+    
     client.subscribe("system_info/cpu")
     client.subscribe("system_info/ram")
     client.subscribe("system_info/disk")
