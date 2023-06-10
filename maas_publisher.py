@@ -20,7 +20,7 @@ ram_threshold = 60
 disk_threshold = 80
 
 client = MongoClient('localhost', 27017)  
-db = client.system_info  
+db = client.system_info
 usage_collection = db.usage_data 
 
 # Connect to Mosquitto broker
@@ -52,4 +52,4 @@ while True:
         mqtt_client.publish("system_info/disk", json.dumps({"message": "High DISK usage!", "disk_percent": disk_percent}))
 
     # Check system info every second
-    time.sleep(1)
+    time.sleep(3)

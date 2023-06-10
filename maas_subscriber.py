@@ -1,21 +1,31 @@
 import paho.mqtt.client as mqtt
 import json
+import argparse
+import subprocess
 
 # Mosquitto 브로커에 연결되었을 때 실행되는 콜백 함수
 def on_connect(client, userdata, flags, rc):
     print("Connected to Mosquitto Broker")
-    
     client.subscribe("system_info/cpu")
     client.subscribe("system_info/ram")
     client.subscribe("system_info/disk")
+    
+    if userdata:
+        client.subscribe(f"system_info/analytics/{userdata}")
+        subprocess.Popen(["python", "analytics_system.py", userdata])
 
 # Mosquitto 브로커부터 메시지를 수신받았을 때 실행되는 콜백 함수
 def on_message(client, userdata, msg):
     message = json.loads(msg.payload)
-    print(f'Topic: {msg.topic}, Message: {message["message"]}, Value: {message["cpu_percent" if "cpu" in msg.topic else "ram_percent" if "ram" in msg.topic else "disk_percent"]}')
+    print(f'Topic: {msg.topic}, Message: {message["message"]}, Value: {message.get("cpu_percent" if "cpu" in msg.topic else "ram_percent" if "ram" in msg.topic else "disk_percent")}')
+
+# Command-line argument parsing
+parser = argparse.ArgumentParser()
+parser.add_argument("--date", help="Enter the date in format YYYY-MM-DD", default=None)
+args = parser.parse_args()
 
 # Mosquitto 브로커에 연결
-mqtt_client = mqtt.Client()
+mqtt_client = mqtt.Client(userdata=args.date)
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
 mqtt_client.connect("localhost", 1883)
