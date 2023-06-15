@@ -17,7 +17,7 @@ python maas_subscriber.py --servers 172.18.147.141 192.168.0.11 --ports 1883 188
 한명의 구독자가 여러 서버의 시스템 정보를 tracking 하기 위한 사전 방법:
 1. 각 서버에 MQTT broker 를 설치한다.
 2. 각 서버에 퍼블리셔 코드를  업로드한다.
-3. 각 퍼블리셔가 각자의 서버 즉, 자신의 ip 주소에 연결하기 위햇 BROKER_HOST 변수를 각 publisher의 서버 IP 주소 혹은 ‘localhost’로 설정한다.
+3. 각 퍼블리셔가 각자의 서버 즉, 자신의 ip 주소에 연결하기 위해서 BROKER_HOST 변수를 각 publisher의 서버 IP 주소 혹은 ‘localhost’로 설정한다.
 4. 시스템 정보를 지속적으로 tracking 하기 위해서 maas_subscriber.py 스크립트 파일을 background에서 실행시켜 둔다.
 
 각 서버에 MQTT broker 를 설치 방법 (Linux):
